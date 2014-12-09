@@ -1,6 +1,8 @@
 configura
 =========
 
+![circleci](https://circleci.com/gh/agonzalezro/configura.png)
+
 **Disclaimer: This is a work in progress, do not use it unless you know what
 you are doing or you want to help me :)**
 
