@@ -3,9 +3,6 @@ configura
 
 ![circleci](https://circleci.com/gh/agonzalezro/configura.png)
 
-**Disclaimer: This is a work in progress, do not use it unless you know what
-you are doing or you want to help me :)**
-
 Configura will allow you to store all your configuration in environment
 variables, but it will provide some other utilities as default values as well.
 
@@ -31,7 +28,7 @@ The most basic thing ever
 
 The example showed above is the simplest one that you can find. You will need
 to have a env var called `TWAPP_SOMESTRING` before launching your program or at
-the moment of loading the conf it will misserably fail (actually, it will just
+the moment of loading the conf it will miserably fail (actually, it will just
 return an error, you can do whatever you want with it :)
 
 Please, bear in mind that `TWAPP_` prefix is something that you specify at
@@ -43,7 +40,7 @@ But what else?
 
 It supports `int`s, `string`s, `bool`s & `time.Duration`s, to use those, your
 env variables should be parsable values (aka, don't set it to "Alex" when you
-are expecting an int) and that's all1
+are expecting an int) and that's all!
 
 ### Example
 
@@ -65,14 +62,18 @@ prefix):
     TWAPP_SOMEDURATION=1s # or whatever accepted by ParseDuration
 
 
-The future
-----------
+More complex struct
+-------------------
 
-As I said at the beginning of this document is that the project is not yet
-finished, I was thinking on the possibility of adding 2 more things:
+Using struct tags you will be able to change the behaviour of the package:
 
-- defaults
-- your own var names
+- The var name to be looked up on the system can be override using
+  `configura:"OVERRIDE"`.
+- In case that the var was not found on the system you will be able to set some
+  default with: `configura:",defaultvalue"`.
+- And finally, if you want to use both: `configura:"OVERRIDE,defaultvalue"`.
+
+### Example:
 
 For doing so the struct will look like this:
 
@@ -89,3 +90,7 @@ For doing so the struct will look like this:
         // Will read it from ANTOHERDURATION but defaulting to 1s
         SomeDuration time.Duration `configura:"ANOTHERDURATION,1s"`
     }
+
+If you need more help, you can check the [package
+documentation](https://godoc.org/github.com/agonzalezro/configura) or [ping me
+on twitter](http://twitter.com/agonzalezro).

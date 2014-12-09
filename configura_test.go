@@ -62,7 +62,60 @@ func TestBasicLoading(t *testing.T) {
 }
 
 func TestStructTagsLoading(t *testing.T) {
-}
+	Convey("Test the configuration with struct tags", t, func() {
+		Convey("When it has different names", func() {
+			type Config struct {
+				Foo string `configura:"DN"`
+			}
+			expectedFoo := "fubar"
 
-func TestWithDefault(t *testing.T) {
+			err := os.Setenv("DN", expectedFoo)
+			So(err, ShouldBeNil)
+
+			c := Config{}
+			err = Load("DOESNTMATTER", &c)
+			So(err, ShouldBeNil)
+
+			So(c.Foo, ShouldEqual, expectedFoo)
+		})
+
+		Convey("When it has defaults", func() {
+			type Config struct {
+				Foo string `configura:",sometesthere"`
+			}
+
+			c := Config{}
+			err := Load("WHATEVER,ITWILLDEFAULT", &c)
+			So(err, ShouldBeNil)
+
+			So(c.Foo, ShouldEqual, "sometesthere")
+		})
+
+		Convey("When it has defaults and different names", func() {
+			type Config struct {
+				Foo string `configura:"ACME,corporation"`
+			}
+
+			Convey("First test without the env var set", func() {
+				c := Config{}
+				err := Load("", &c)
+				So(err, ShouldBeNil)
+
+				So(c.Foo, ShouldEqual, "corporation")
+			})
+
+			Convey("And test is with the env var set now", func() {
+				expectedFoo := "more fubar"
+
+				err := os.Setenv("ACME", expectedFoo)
+				So(err, ShouldBeNil)
+
+				c := Config{}
+				err = Load("", &c)
+				So(err, ShouldBeNil)
+
+				So(c.Foo, ShouldEqual, expectedFoo)
+			})
+		})
+	})
 }

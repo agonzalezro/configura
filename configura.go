@@ -18,6 +18,23 @@ func mismatchError(n string, i interface{}, t reflect.Kind) error {
 	return fmt.Errorf("%s=%v must be %s", n, i, t)
 }
 
+func getStructInfo(v reflect.StructField) (fieldName, envVar, defVal string) {
+	fieldName = v.Name
+	tags := strings.Split(v.Tag.Get("configura"), ",")
+	envVar = tags[0]
+	if len(tags) > 1 {
+		defVal = tags[1]
+	}
+	return
+}
+
+// Load will go through all the fields defined in your struct and trying to
+// load their config values from environemnt variables.
+// The var name to be looked up on the system can be override using struct
+// tags: `configura:"OVERRIDE"`
+// The user will also be able to set some defaults int case that the variable
+// was not found on the system: `configura:",defaultvalue"`
+// Or both: `configura:"OVERRIDE,defaultvalue"`
 func Load(prefix string, c interface{}) error {
 	t := reflect.TypeOf(c)
 	te := t.Elem()
@@ -29,13 +46,20 @@ func Load(prefix string, c interface{}) error {
 	}
 
 	for i := 0; i < te.NumField(); i++ {
-		name := te.Field(i).Name
-		field := ve.FieldByName(name)
-		// env vars will be uppercase
-		varName := prefix + strings.ToUpper(name)
-		env := os.Getenv(varName)
-		if env == "" { // TODO: we will have default here
-			return noDefaultsError(name, varName)
+		sf := te.Field(i)
+		fieldName, envVar, defVal := getStructInfo(sf)
+
+		field := ve.FieldByName(fieldName)
+
+		if envVar == "" {
+			envVar = prefix + strings.ToUpper(fieldName)
+		}
+		env := os.Getenv(envVar)
+
+		if env == "" && defVal != "" {
+			env = defVal
+		} else if env == "" {
+			return noDefaultsError(fieldName, envVar)
 		}
 
 		kind := field.Kind()
@@ -46,19 +70,19 @@ func Load(prefix string, c interface{}) error {
 		case reflect.Int:
 			n, err := strconv.Atoi(env)
 			if err != nil {
-				return mismatchError(name, n, kind)
+				return mismatchError(fieldName, n, kind)
 			}
 			field.SetInt(int64(n))
 		case reflect.Bool:
 			b, err := strconv.ParseBool(env)
 			if err != nil {
-				return mismatchError(name, b, kind)
+				return mismatchError(fieldName, b, kind)
 			}
 			field.SetBool(b)
 		case reflect.Int64: // time.Duration
 			t, err := time.ParseDuration(env)
 			if err != nil {
-				return mismatchError(name, t, kind)
+				return mismatchError(fieldName, t, kind)
 			}
 			field.Set(reflect.ValueOf(t))
 		default:
