@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func noDefaultsError(n, v string) error {
@@ -48,6 +49,20 @@ func Load(prefix string, c interface{}) error {
 				return mismatchError(name, n, kind)
 			}
 			field.SetInt(int64(n))
+		case reflect.Bool:
+			b, err := strconv.ParseBool(env)
+			if err != nil {
+				return mismatchError(name, b, kind)
+			}
+			field.SetBool(b)
+		case reflect.Int64: // time.Duration
+			t, err := time.ParseDuration(env)
+			if err != nil {
+				return mismatchError(name, t, kind)
+			}
+			field.Set(reflect.ValueOf(t))
+		default:
+			return fmt.Errorf("%s is not parsable", kind)
 		}
 	}
 
