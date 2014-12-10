@@ -1,7 +1,7 @@
 configura
 =========
 
-![circleci](https://circleci.com/gh/agonzalezro/configura.png)
+[![circleci](https://circleci.com/gh/agonzalezro/configura.png)](https://circleci.com/gh/agonzalezro/configura)
 
 Configura will allow you to store all your configuration in environment
 variables, but it will also let you set some defaults.
