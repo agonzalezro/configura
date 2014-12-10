@@ -76,6 +76,16 @@ func Load(prefix string, c interface{}) error {
 				return mismatchError(fieldName, n, kind)
 			}
 			field.SetInt(int64(n))
+		case reflect.Float32, reflect.Float64:
+			bitSize := 32
+			if kind == reflect.Float64 {
+				bitSize = 64
+			}
+			n, err := strconv.ParseFloat(env, bitSize)
+			if err != nil {
+				return mismatchError(fieldName, n, kind)
+			}
+			field.SetFloat(n)
 		case reflect.Bool:
 			b, err := strconv.ParseBool(env)
 			if err != nil {

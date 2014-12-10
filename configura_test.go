@@ -16,6 +16,8 @@ func TestBasicLoading(t *testing.T) {
 			SomeInt      int
 			SomeBool     bool
 			SomeDuration time.Duration
+			SomeFloat32  float32
+			SomeFloat64  float64
 		}
 
 		Convey("When all the variables are set", func() {
@@ -24,15 +26,23 @@ func TestBasicLoading(t *testing.T) {
 			expectedBool := true
 			expectedDuration, err := time.ParseDuration("1s")
 			So(err, ShouldBeNil)
+			var (
+				expectedFloat32 float32 = 3.2
+				expectedFloat64 float64 = 6.4
+			)
 
-			err = os.Setenv("TEST_SOMESTRING", expectedString)
-			So(err, ShouldBeNil)
-			err = os.Setenv("TEST_SOMEINT", strconv.Itoa(expectedInt))
-			So(err, ShouldBeNil)
-			err = os.Setenv("TEST_SOMEBOOL", strconv.FormatBool(expectedBool))
-			So(err, ShouldBeNil)
-			err = os.Setenv("TEST_SOMEDURATION", expectedDuration.String())
-			So(err, ShouldBeNil)
+			envs := map[string]string{
+				"TEST_SOMESTRING":   expectedString,
+				"TEST_SOMEINT":      strconv.Itoa(expectedInt),
+				"TEST_SOMEBOOL":     strconv.FormatBool(expectedBool),
+				"TEST_SOMEDURATION": expectedDuration.String(),
+				"TEST_SOMEFLOAT32":  strconv.FormatFloat(float64(expectedFloat32), 'f', 2, 32),
+				"TEST_SOMEFLOAT64":  strconv.FormatFloat(expectedFloat64, 'f', 2, 64),
+			}
+			for k, v := range envs {
+				err = os.Setenv(k, v)
+				So(err, ShouldBeNil)
+			}
 
 			c := Config{}
 			err = Load("TEST_", &c)
@@ -42,6 +52,8 @@ func TestBasicLoading(t *testing.T) {
 			So(c.SomeInt, ShouldEqual, expectedInt)
 			So(c.SomeBool, ShouldEqual, expectedBool)
 			So(c.SomeDuration, ShouldEqual, expectedDuration)
+			So(c.SomeFloat32, ShouldEqual, expectedFloat32)
+			So(c.SomeFloat64, ShouldEqual, expectedFloat64)
 		})
 
 		Convey("When at least one variable is not set", func() {

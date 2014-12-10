@@ -41,9 +41,17 @@ anything.
 But what else?
 --------------
 
-It supports `int`s, `string`s, `bool`s & `time.Duration`s, to use those, your
-env variables should be parsable values (aka, don't set it to "Alex" when you
-are expecting an int) and that's all!
+It supports:
+
+- `int`s
+- `string`s
+- `bool`s
+- `time.Duration`s
+- `float32`s & `float64`s
+
+Of course, to use some of those types, your env variables should have parsable
+values (aka, don't set it to "Alex" when you are expecting an int) and that's
+all!
 
 ### Example
 
