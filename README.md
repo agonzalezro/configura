@@ -22,12 +22,14 @@ me show you that I am not lying:
 The most basic thing ever
 -------------------------
 
+    import "github.com/agonzalezro/configura"
+    
     type Config struct {
         SomeString   string
     }
 
     c := Config{}
-    err := Load("TWAPP_", &c)
+    err := configura.Load("TWAPP_", &c)
 
 The example showed above is the simplest one that you can find. You will need
 to have a env var called `TWAPP_SOMESTRING` before launching your program or at
