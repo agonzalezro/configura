@@ -22,18 +22,28 @@ me show you that I am not lying:
 The most basic thing ever
 -------------------------
 
-    import "github.com/agonzalezro/configura"
+    package main
+
+    import (
+    	"log"
+    
+    	"github.com/agonzalezro/configura"
+    )
     
     type Config struct {
-        SomeString   string
+    	SomeString string
     }
     
     func main() {
-        c := Config{}
-        err := configura.Load("TWAPP_", &c)
-        
+    	c := Config{}
+    	err := configura.Load("TWAPP_", &c)
+    
+    	if err != nil {
+    		log.Fatal(err)
+    	}
+    	log.Println(c.SomeString)
     }
-
+    
 The example showed above is the simplest one that you can find. You will need
 to have a env var called `TWAPP_SOMESTRING` before launching your program or at
 the moment of loading the conf it will miserably fail (actually, it will just
