@@ -78,6 +78,7 @@ func TestStructTagsLoading(t *testing.T) {
 		Convey("When it has different names", func() {
 			type Config struct {
 				Foo string `configura:"DN"`
+				Bar string `configura:"DN,"`
 			}
 			expectedFoo := "fubar"
 
