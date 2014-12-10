@@ -93,10 +93,10 @@ For doing so the struct will look like this:
         SomeString   string
 
         // Will read it from ANOTHERINT and if it's not there will fail
-        SomeInt      int `configura:"ANOTHERINT"
+        SomeInt      int `configura:"ANOTHERINT"`
 
         // Will default to true reading the value from TWAPP_SOMEBOOL
-        SomeBool     bool `configura:",true"
+        SomeBool     bool `configura:",true"`
 
         // Will read it from ANTOHERDURATION but defaulting to 1s
         SomeDuration time.Duration `configura:"ANOTHERDURATION,1s"`
