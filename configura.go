@@ -30,11 +30,14 @@ func getStructInfo(v reflect.StructField) (fieldName, envVar, defVal string) {
 
 // Load will go through all the fields defined in your struct and trying to
 // load their config values from environemnt variables.
-// The var name to be looked up on the system can be override using struct
+//
+// - The var name to be looked up on the system can be override using struct
 // tags: `configura:"OVERRIDE"`
-// The user will also be able to set some defaults int case that the variable
+//
+// - The user will also be able to set some defaults int case that the variable
 // was not found on the system: `configura:",defaultvalue"`
-// Or both: `configura:"OVERRIDE,defaultvalue"`
+//
+// - Or both: `configura:"OVERRIDE,defaultvalue"`
 func Load(prefix string, c interface{}) error {
 	t := reflect.TypeOf(c)
 	te := t.Elem()
