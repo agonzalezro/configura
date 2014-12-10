@@ -27,9 +27,12 @@ The most basic thing ever
     type Config struct {
         SomeString   string
     }
-
-    c := Config{}
-    err := configura.Load("TWAPP_", &c)
+    
+    func main() {
+        c := Config{}
+        err := configura.Load("TWAPP_", &c)
+        
+    }
 
 The example showed above is the simplest one that you can find. You will need
 to have a env var called `TWAPP_SOMESTRING` before launching your program or at
