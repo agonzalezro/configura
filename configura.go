@@ -31,6 +31,8 @@ func getStructInfo(v reflect.StructField) (fieldName, envVar, defVal string) {
 // Load will go through all the fields defined in your struct and trying to
 // load their config values from environemnt variables.
 //
+// Bear in mind that a underscore will be appended to the prefix.
+//
 // - The var name to be looked up on the system can be override using struct
 // tags: `configura:"OVERRIDE"`
 //
@@ -55,7 +57,11 @@ func Load(prefix string, c interface{}) error {
 		field := ve.FieldByName(fieldName)
 
 		if envVar == "" {
-			envVar = prefix + strings.ToUpper(fieldName)
+			if prefix != "" {
+				envVar = prefix + "_"
+			}
+
+			envVar += strings.ToUpper(fieldName)
 		}
 		env := os.Getenv(envVar)
 

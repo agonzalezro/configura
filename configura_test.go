@@ -45,7 +45,7 @@ func TestBasicLoading(t *testing.T) {
 			}
 
 			c := Config{}
-			err = Load("TEST_", &c)
+			err = Load("TEST", &c)
 			So(err, ShouldBeNil)
 
 			So(c.SomeString, ShouldEqual, expectedString)
@@ -67,8 +67,35 @@ func TestBasicLoading(t *testing.T) {
 			So(err, ShouldBeNil)
 
 			c := Config{}
-			err = Load("TEST_", &c)
+			err = Load("TEST", &c)
 			So(err, ShouldNotBeNil)
+		})
+	})
+}
+
+func TestStructConfiguration(t *testing.T) {
+	Convey("Test that if the type of the field is a struct", t, func() {
+		type Config struct {
+			Foo struct {
+				Bar string
+			}
+		}
+		c := Config{}
+
+		Convey("If the env vars are not set, the loading will fail", func() {
+			err := Load("", &c)
+			So(err, ShouldNotBeNil)
+		})
+
+		Convey("But if they are set it will work", func() {
+			expected := "this will be set"
+
+			err := os.Setenv("TEST_FOO_BAR", expected)
+			So(err, ShouldBeNil)
+
+			err = Load("TEST", &c)
+			So(err, ShouldBeNil)
+			So(c.Foo.Bar, ShouldEqual, expected)
 		})
 	})
 }

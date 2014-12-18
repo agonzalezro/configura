@@ -27,16 +27,17 @@ The most basic thing ever
     }
 
     c := Config{}
-    err := Load("TWAPP_", &c)
+    err := Load("TWAPP", &c)
 
 The example showed above is the simplest one that you can find. You will need
 to have a env var called `TWAPP_SOMESTRING` before launching your program or at
 the moment of loading the conf it will miserably fail (actually, it will just
 return an error, you can do whatever you want with it :)
 
-Please, bear in mind that `TWAPP_` prefix is something that you specify at
+Please, bear in mind that `TWAPP` prefix is something that you specify at
 loading time, but you can use whatever prefix you want, or even don't use
-anything.
+anything. *A `_` will always be appended at the end unless you define another
+var name on the struct tags.*
 
 But what else?
 --------------
